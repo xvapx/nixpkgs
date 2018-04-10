@@ -6,14 +6,14 @@
   maxRam ? "1024m" }:
 
 stdenv.mkDerivation rec {
-  version = "6.7.0";
-  rev = "1512021600670_4503";
+  version = "6.7.1";
+  rev = "1512021600671_4615";
   pname = "CrashPlanSmb";
   name = "${pname}_${version}_${rev}";
   
   src = fetchurl {
     url = "https://web-eam-msp.crashplanpro.com/client/installers/${name}_Linux.tgz";
-    sha256 = "0f7ykfxaqjlvv4hv12yc5z8y1vjsysdblv53byml7i1fy1r0q26q";
+    sha256 = "13h3cnrsi7db29a32hs7pxlnyjcsxl7imkgm9nn9rfnhqnlmzj4m";
   };
 
   nativeBuildInputs = [ makeWrapper cpio nodePackages.asar ];
