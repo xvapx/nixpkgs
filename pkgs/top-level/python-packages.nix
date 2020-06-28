@@ -6734,6 +6734,8 @@ in {
 
   web = callPackage ../development/python-modules/web { };
 
+  webargs = callPackage ../development/python-modules/webargs { };
+
   webob = callPackage ../development/python-modules/webob { };
 
   websockify = callPackage ../development/python-modules/websockify { };
