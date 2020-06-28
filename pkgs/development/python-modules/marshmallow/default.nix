@@ -1,6 +1,4 @@
-{ lib, buildPythonPackage, fetchPypi,
-  dateutil, simplejson, isPy27
-}:
+{ lib, buildPythonPackage, fetchPypi, isPy27 }:
 
 buildPythonPackage rec {
   pname = "marshmallow";
@@ -20,8 +18,6 @@ buildPythonPackage rec {
     inherit pname version;
     sha256 = "35ee2fb188f0bd9fc1cf9ac35e45fd394bd1c153cee430745a465ea435514bd5";
   };
-
-  propagatedBuildInputs = [ dateutil simplejson ];
 
   doCheck = false;
 }
