@@ -6740,6 +6740,8 @@ in {
 
   webtest = callPackage ../development/python-modules/webtest { };
 
+  webtest-aiohttp = callPackage ../development/python-modules/webtest-aiohttp { };
+
   wsgiproxy2 = callPackage ../development/python-modules/wsgiproxy2 { };
 
   wsgitools = callPackage ../development/python-modules/wsgitools { };
