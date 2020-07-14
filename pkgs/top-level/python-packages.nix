@@ -6735,6 +6735,7 @@ in {
   web = callPackage ../development/python-modules/web { };
 
   webargs = callPackage ../development/python-modules/webargs { };
+  webargs5 = callPackage ../development/python-modules/webargs/webargs5.nix { };
 
   webob = callPackage ../development/python-modules/webob { };
 
