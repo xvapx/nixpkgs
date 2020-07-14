@@ -1,13 +1,15 @@
-{ stdenv, fetchurl, pkgs, python3Packages, makeWrapper
+{ stdenv, fetchgit, pkgs, python3Packages, makeWrapper
 , enablePlayer ? true, vlc ? null, qt5, lib }:
 
 stdenv.mkDerivation rec {
   pname = "tribler";
-  version = "7.4.4";
+  version = "7.5.1";
 
-  src = fetchurl {
-    url = "https://github.com/Tribler/tribler/releases/download/v${version}/Tribler-v${version}.tar.xz";
-    sha256 = "0hxiyf1k07ngym2p8r1b5mcx1y2crkyz43gi9sgvsvsyijyaff3p";
+  src = fetchgit {
+    url = "https://github.com/Tribler/tribler.git";
+    rev = "04b7e3d5406a893ab3e7efaac63d1fa8b9beec87";
+    sha256 = "1hvgk0ncy412bqimk90mrfplwbkh59c7va9m6axr5gw341l23ckj";
+    fetchSubmodules = true;
   };
 
   nativeBuildInputs = [
@@ -19,29 +21,32 @@ stdenv.mkDerivation rec {
     python3Packages.python
   ];
 
-  pythonPath = [
-    python3Packages.libtorrentRasterbar
-    python3Packages.twisted
-    python3Packages.netifaces
-    python3Packages.pycrypto
-    python3Packages.pyasn1
-    python3Packages.requests
-    python3Packages.m2crypto
-    python3Packages.pyqt5
-    python3Packages.chardet
-    python3Packages.cherrypy
-    python3Packages.cryptography
-    python3Packages.libnacl
-    python3Packages.configobj
-    python3Packages.decorator
-    python3Packages.feedparser
-    python3Packages.service-identity
-    python3Packages.psutil
-    python3Packages.pillow
-    python3Packages.networkx
-    python3Packages.pony
-    python3Packages.lz4
-    python3Packages.pyqtgraph
+  pythonPath = with python3Packages; [
+    aiohttp
+    aiohttp-apispec
+    libtorrentRasterbar
+    twisted
+    netifaces
+    pycrypto
+    pyasn1
+    requests
+    m2crypto
+    pyqt5
+    chardet
+    cherrypy
+    cryptography
+    libnacl
+    configobj
+    decorator
+    feedparser
+    service-identity
+    psutil
+    pillow
+    pyyaml
+    networkx
+    pony
+    lz4
+    pyqtgraph
 
     # there is a BTC feature, but it requires some unclear version of
     # bitcoinlib, so this doesn't work right now.
@@ -50,9 +55,9 @@ stdenv.mkDerivation rec {
 
   postPatch = ''
     ${stdenv.lib.optionalString enablePlayer ''
-      substituteInPlace "./TriblerGUI/vlc.py" --replace "ctypes.CDLL(p)" "ctypes.CDLL('${vlc}/lib/libvlc.so')"
-      substituteInPlace "./TriblerGUI/widgets/videoplayerpage.py" --replace "if vlc and vlc.plugin_path" "if vlc"
-      substituteInPlace "./TriblerGUI/widgets/videoplayerpage.py" --replace "os.environ['VLC_PLUGIN_PATH'] = vlc.plugin_path" "os.environ['VLC_PLUGIN_PATH'] = '${vlc}/lib/vlc/plugins'"
+      substituteInPlace "./src/tribler-gui/tribler_gui/vlc.py" --replace "ctypes.CDLL(p)" "ctypes.CDLL('${vlc}/lib/libvlc.so')"
+      substituteInPlace "./src/tribler-gui/tribler_gui//widgets/videoplayerpage.py" --replace "if vlc and vlc.plugin_path" "if vlc"
+      substituteInPlace "./src/tribler-gui/tribler_gui//widgets/videoplayerpage.py" --replace "os.environ['VLC_PLUGIN_PATH'] = vlc.plugin_path" "os.environ['VLC_PLUGIN_PATH'] = '${vlc}/lib/vlc/plugins'"
     ''}
   '';
 
@@ -61,21 +66,21 @@ stdenv.mkDerivation rec {
     # Nasty hack; call wrapPythonPrograms to set program_PYTHONPATH.
     wrapPythonPrograms
     cp -prvd ./* $out/
-    makeWrapper ${python3Packages.python}/bin/python $out/bin/tribler \
+    install -Dm755 $out/src/run_tribler.py $out/bin/tribler
+    makeWrapper ${python37Packages.python}/bin/python $out/bin/tribler \
         --set QT_QPA_PLATFORM_PLUGIN_PATH ${qt5.qtbase.bin}/lib/qt-*/plugins/platforms \
         --set _TRIBLERPATH $out \
-        --set PYTHONPATH $out:$program_PYTHONPATH \
+        --set PYTHONPATH $out:$out/src/pyipv8:$out/src/anydex:$out/src/tribler-common:$out/src/tribler-core:$out/src/tribler-gui:$program_PYTHONPATH \
         --set NO_AT_BRIDGE 1 \
         --run 'cd $_TRIBLERPATH' \
-        --add-flags "-O $out/run_tribler.py" \
+        --add-flags "-O $out/src/run_tribler.py" \
         ${stdenv.lib.optionalString enablePlayer ''
           --prefix LD_LIBRARY_PATH : ${vlc}/lib
         ''}
 
-    mkdir -p $out/share/applications $out/share/icons $out/share/man/man1
-    cp $out/Tribler/Main/Build/Ubuntu/tribler.desktop $out/share/applications/tribler.desktop
-    cp $out/Tribler/Main/Build/Ubuntu/tribler_big.xpm $out/share/icons/tribler.xpm
-    cp $out/Tribler/Main/Build/Ubuntu/tribler.1 $out/share/man/man1/tribler.1
+    mkdir -p $out/share/applications $out/share/icons
+    cp $out/build/debian/tribler/usr/share/applications/tribler.desktop $out/share/applications/
+    cp $out/build/debian/tribler/usr/share/pixmaps/tribler{,_big}.xpm $out/share/icons/
   '';
 
   meta = with stdenv.lib; {
