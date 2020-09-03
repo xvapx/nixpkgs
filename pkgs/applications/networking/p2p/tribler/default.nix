@@ -3,12 +3,12 @@
 
 stdenv.mkDerivation rec {
   pname = "tribler";
-  version = "7.5.1";
+  version = "7.5.2";
 
   src = fetchgit {
     url = "https://github.com/Tribler/tribler.git";
-    rev = "04b7e3d5406a893ab3e7efaac63d1fa8b9beec87";
-    sha256 = "1hvgk0ncy412bqimk90mrfplwbkh59c7va9m6axr5gw341l23ckj";
+    rev = "b32e1aa801832c6a0ffb54db4be3434dfef1f539";
+    sha256 = "0mqbl7qjv61s5z8b60x9km734ylcjazp04720mnv9az98yk41mhv";
     fetchSubmodules = true;
   };
 
@@ -67,7 +67,7 @@ stdenv.mkDerivation rec {
     wrapPythonPrograms
     cp -prvd ./* $out/
     install -Dm755 $out/src/run_tribler.py $out/bin/tribler
-    makeWrapper ${python37Packages.python}/bin/python $out/bin/tribler \
+    makeWrapper ${python3Packages.python}/bin/python $out/bin/tribler \
         --set QT_QPA_PLATFORM_PLUGIN_PATH ${qt5.qtbase.bin}/lib/qt-*/plugins/platforms \
         --set _TRIBLERPATH $out \
         --set PYTHONPATH $out:$out/src/pyipv8:$out/src/anydex:$out/src/tribler-common:$out/src/tribler-core:$out/src/tribler-gui:$program_PYTHONPATH \
