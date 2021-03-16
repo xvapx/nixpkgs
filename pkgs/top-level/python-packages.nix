@@ -8683,6 +8683,8 @@ in {
 
   webapp2 = callPackage ../development/python-modules/webapp2 { };
 
+  webargs5 = callPackage ../development/python-modules/webargs/webargs5.nix { };
+
   webassets = callPackage ../development/python-modules/webassets { };
 
   web = callPackage ../development/python-modules/web { };
