@@ -26,13 +26,13 @@
 
 buildPythonPackage rec {
   pname = "aiohttp";
-  version = "3.7.3";
+  version = "3.7.4.post0";
   # https://github.com/aio-libs/aiohttp/issues/4525 python3.8 failures
   disabled = pythonOlder "3.5";
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "9c1a81af067e72261c9cbe33ea792893e83bc6aa987bfbd6fdc1e5e7b22777c4";
+    sha256 = "1kzyg94qi264rpzxs4a9x2lg3amvrz6yl6cqdg3agxg5xfck4ga9";
   };
 
   checkInputs = [
