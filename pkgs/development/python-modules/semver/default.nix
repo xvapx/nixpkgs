@@ -7,13 +7,13 @@
 
 buildPythonPackage rec {
   pname = "semver";
-  version = "2.10.2";
+  version = "2.13.0";
 
   src = fetchFromGitHub {
     owner = "python-semver";
     repo = "python-semver";
     rev = version;
-    sha256 = "0yxjmcgk5iwp53l9z1cg0ajrj18i09ircs11ifpdrggzm8n1blf3";
+    sha256 = "133kjhsnliyvw72h441w0306p5i59ir1yp0vjr810is9zzyfhr11";
   };
 
   preCheck = "rm -rf dist"; # confuses source vs dist imports in pytest
